@@ -15,16 +15,19 @@ import (
 func main() {
 	flag.Parse()
 
-	fmt.Println("ebooker")
+	fmt.Println("ebooker starting...")
 
 	// Handle inputs
 	for _, input := range flag.Args() {
-		createBook(input)
+		if err := createBook(input); err != nil {
+			fmt.Printf("Error building book: %v\n", err)
+			return
+		}
 	}
 }
 
 func createBook(inputfile string) error {
-	fmt.Printf("Reading book data from %s...\n", inputfile)
+	fmt.Printf("Reading book data from %s\n", inputfile)
 
 	// Read the file.
 	contents, err := ioutil.ReadFile(inputfile)
@@ -43,4 +46,5 @@ func createBook(inputfile string) error {
 
 	// Generate output
 
+	return nil
 }
