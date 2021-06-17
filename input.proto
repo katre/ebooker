@@ -1,14 +1,18 @@
-package ebooker;
+syntax = "proto3";
+
+package ebooker.data;
+
+option go_package = "pb";
 
 message Book {
-  optional string title = 1;
-  optional string author = 2;
+  string title = 1;
+  string author = 2;
   repeated Chapter chapters = 3;
-  optional string defaultSelector = 4;
+  string defaultSelector = 4;
 }
 
 message Chapter {
-  optional string name = 1;
-  optional string url = 2;
-  optional string selector = 3;
+  string name = 1;
+  string url = 2;
+  string selector = 3;
 }
