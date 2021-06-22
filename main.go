@@ -9,6 +9,7 @@ import (
 
 	"ebooker/data"
 	"ebooker/downloader"
+	"ebooker/selector"
 )
 
 // Define flags
@@ -50,9 +51,18 @@ func createBook(inputfile string) error {
 		return err
 	}
 
+	// Get just the correct output.
 	for _, chapter := range input.GetChapters() {
+		s := chapter.GetSelector()
+		if s == "" {
+			s = input.GetDefaultSelector()
+		}
 		body := bodies[chapter.GetUrl()]
-		fmt.Printf("Read chapter %s, content: %s\n", chapter.GetName(), shorten(body, 20))
+		selection, err := selector.SelectContent(body, s)
+		if err != nil {
+			return err
+		}
+		fmt.Printf("Read chapter %s, content: %s\n", chapter.GetName(), shorten(selection, 200))
 	}
 
 	// Generate output

@@ -17,7 +17,6 @@ func SelectContent(content string, selector string) (string, error) {
 
 	// Remove any link tags, replace with the textual content.
 	result.Find("a").Each(func(i int, s *goquery.Selection) {
-		fmt.Printf("inside Each: %d, %v\n", i, s.Text())
 		s.ReplaceWithHtml(s.Text())
 	})
 

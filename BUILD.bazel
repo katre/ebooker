@@ -49,8 +49,6 @@ go_test(
     name = "selector_test",
     srcs = ["selector_test.go"],
     embed = [":selector"],
-    deps = [
-    ],
 )
 
 go_binary(
@@ -59,6 +57,7 @@ go_binary(
     deps = [
         ":downloader",
         ":input_proto_go",
+        ":selector",
         "@org_golang_google_protobuf//encoding/prototext:go_default_library",
     ],
 )
