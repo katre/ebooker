@@ -20,7 +20,7 @@ func TestSelectContent(t *testing.T) {
 			content: `
       <html><body>boilerplate<div class="post-content">This is the actual stuff</div></html>
       `,
-			selector: "div#post-content",
+			selector: "div.post-content",
 			want:     "This is the actual stuff",
 		},
 		{
@@ -28,7 +28,7 @@ func TestSelectContent(t *testing.T) {
 			content: `
       <html><body>boilerplate<div">This is the actual stuff</div></html>
       `,
-			selector: "div#post-content",
+			selector: "div.post-content",
 			want:     "",
 		},
 		{
@@ -36,7 +36,7 @@ func TestSelectContent(t *testing.T) {
 			content: `
       <html><body>boilerplate<div">This is the <i>actual</i> stuff</div></html>
       `,
-			selector: "div#post-content",
+			selector: "div.post-content",
 			want:     "This is the <i>actual</i> stuff",
 		},
 		{
@@ -44,16 +44,19 @@ func TestSelectContent(t *testing.T) {
 			content: `
       <html><body>boilerplate<div">This is the <a href="example.com">actual</a> stuff</div></html>
       `,
-			selector: "div#post-content",
+			selector: "div.post-content",
 			want:     "This is the actual stuff",
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			got := SelectContent(tc.content, tc.selector)
+			got, err := SelectContent(tc.content, tc.selector)
+			if err != nil {
+				t.Fatalf("SelectContent(%s) had unexpected error: %v", tc.name, err)
+			}
 			if diff := cmp.Diff(tc.want, got); diff != "" {
-				t.Errorf("SelectOnce(%s) had unexpected diff (-want +got): %s", tc.name, diff)
+				t.Errorf("SelectContent(%s) had unexpected diff (-want +got): %s", tc.name, diff)
 			}
 		})
 	}
