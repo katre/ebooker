@@ -49,6 +49,27 @@ go_repository(
     version = "v1.0.8",
 )
 
+go_repository(
+    name = "com_github_puerkitobio_goquery",
+    importpath = "github.com/PuerkitoBio/goquery",
+    sum = "h1:O5SP3b9JWqMSVMG69zMfj577zwkSNpxrFf7ybS74eiw=",
+    version = "v1.7.0",
+)
+
+go_repository(
+    name = "com_github_google_go_cmp",
+    importpath = "github.com/google/go-cmp",
+    sum = "h1:BKbKCqvP6I+rmFHt06ZmyQtvB8xAkWdhFyr0ZUNZcxQ=",
+    version = "v0.5.6",
+)
+
+go_repository(
+    name = "com_github_andybalholm_cascadia",
+    importpath = "github.com/andybalholm/cascadia",
+    sum = "h1:vuRCkM5Ozh/BfmsaTm26kbjm0mIOM3yS5Ek/F5h18aE=",
+    version = "v1.2.0",
+)
+
 rules_proto_dependencies()
 
 rules_proto_toolchains()

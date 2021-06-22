@@ -24,8 +24,6 @@ go_library(
     name = "downloader",
     srcs = ["downloader.go"],
     importpath = "ebooker/downloader",
-    deps = [
-    ],
 )
 
 go_test(
@@ -34,6 +32,24 @@ go_test(
     embed = [":downloader"],
     deps = [
         "@com_github_jarcoal_httpmock//:go_default_library",
+    ],
+)
+
+go_library(
+    name = "selector",
+    srcs = ["selector.go"],
+    importpath = "ebooker/selector",
+    deps = [
+        "@com_github_google_go_cmp//cmp:go_default_library",
+        "@com_github_puerkitobio_goquery//:go_default_library",
+    ],
+)
+
+go_test(
+    name = "selector_test",
+    srcs = ["selector_test.go"],
+    embed = [":selector"],
+    deps = [
     ],
 )
 
