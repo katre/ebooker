@@ -4,19 +4,19 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+
+	"ebooker/data"
 )
 
-func Download(urls []string) (map[string]string, error) {
-	results := make(map[string]string)
-	for _, url := range urls {
-		content, err := downloadOne(url)
+func Download(downloadables []*data.Chapter) error {
+	for _, d := range downloadables {
+		content, err := downloadOne(d.Url())
 		if err != nil {
-			return nil, err
+			return err
 		}
-		results[url] = content
+		d.SetContent(content)
 	}
-
-	return results, nil
+	return nil
 }
 
 func downloadOne(url string) (string, error) {

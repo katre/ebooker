@@ -51,7 +51,7 @@ func TestSelectContent(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			got, err := SelectContent(tc.content, tc.selector)
+			got, err := selectContent(tc.content, tc.selector)
 			if err != nil {
 				t.Fatalf("SelectContent(%s) had unexpected error: %v", tc.name, err)
 			}

@@ -7,6 +7,7 @@ import (
 
 	"google.golang.org/protobuf/encoding/prototext"
 
+	"ebooker/data"
 	"ebooker/downloader"
 	"ebooker/proto"
 	"ebooker/selector"
@@ -42,27 +43,21 @@ func createBook(inputfile string) error {
 		return err
 	}
 
+	book := data.NewBook(input)
+
 	fmt.Printf("Processing %s, by %s\n", input.GetTitle(), input.GetAuthor())
 
-	// Download chapters
-	urls := getAllUrls(input.GetChapters())
-	bodies, err := downloader.Download(urls)
+	// Download chapters.
+	err = downloader.Download(book.Chapters)
 	if err != nil {
 		return err
 	}
 
 	// Get just the correct output.
-	for _, chapter := range input.GetChapters() {
-		s := chapter.GetSelector()
-		if s == "" {
-			s = input.GetDefaultSelector()
-		}
-		body := bodies[chapter.GetUrl()]
-		selection, err := selector.SelectContent(body, s)
-		if err != nil {
-			return err
-		}
-		fmt.Printf("Read chapter %s, content: %s\n", chapter.GetName(), shorten(selection, 200))
+	err = selector.Select(book.Chapters)
+
+	for _, chapter := range book.Chapters {
+		fmt.Printf("Read chapter %s, content: %s\n", chapter.Name, shorten(chapter.Content(), 200))
 	}
 
 	// Generate output
