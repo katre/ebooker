@@ -8,6 +8,7 @@ import (
 	"google.golang.org/protobuf/encoding/prototext"
 
 	"ebooker/data"
+	"ebooker/downloader"
 )
 
 // Define flags
@@ -43,8 +44,33 @@ func createBook(inputfile string) error {
 	fmt.Printf("Processing %s, by %s\n", input.GetTitle(), input.GetAuthor())
 
 	// Download chapters
+	urls := getAllUrls(input.GetChapters())
+	bodies, err := downloader.Download(urls)
+	if err != nil {
+		return err
+	}
+
+	for _, chapter := range input.GetChapters() {
+		body := bodies[chapter.GetUrl()]
+		fmt.Printf("Read chapter %s, content: %s\n", chapter.GetName(), shorten(body, 20))
+	}
 
 	// Generate output
 
 	return nil
+}
+
+func getAllUrls(chapters []*data.Chapter) []string {
+	var urls []string
+	for _, chapter := range chapters {
+		urls = append(urls, chapter.GetUrl())
+	}
+	return urls
+}
+
+func shorten(input string, length int) string {
+	if len(input) < length {
+		return input
+	}
+	return input[0:length] + "..."
 }

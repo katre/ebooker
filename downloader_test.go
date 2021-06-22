@@ -21,11 +21,8 @@ func TestDownloadOne(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
-	if result.Url != url {
-		t.Errorf("downloadOne(%s).Url = %s, wanted %s", url, result.Url, url)
-	}
-	if result.Content != response {
-		t.Errorf("downloadOne(%s).Content = %s, wanted %s", url, result.Content, response)
+	if result != response {
+		t.Errorf("downloadOne(%s) = %s, wanted %s", url, result, response)
 	}
 }
 
@@ -41,7 +38,7 @@ func TestDownloadOne_missing(t *testing.T) {
 	if err == nil {
 		t.Fatal("Expected error, but did not receive one")
 	}
-	if result != nil {
-		t.Errorf("expected nil result, but was non-nil: %v", result)
+	if result != "" {
+		t.Errorf("expected empty result, but was non-empty: %v", result)
 	}
 }

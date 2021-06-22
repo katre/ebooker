@@ -6,53 +6,34 @@ import (
 	"net/http"
 )
 
-type Result struct {
-	Url     string
-	Content string
-}
-
-func (r *Result) String() string {
-	return fmt.Sprintf("Result(%s): %s", r.Url, shorten(r.Content, 10))
-}
-
-func shorten(input string, length int) string {
-	if len(input) < length {
-		return input
-	}
-	return input[0:length] + "..."
-}
-
-func Download(urls []string) ([]*Result, error) {
-	var results []*Result
+func Download(urls []string) (map[string]string, error) {
+	results := make(map[string]string)
 	for _, url := range urls {
-		result, err := downloadOne(url)
+		content, err := downloadOne(url)
 		if err != nil {
 			return nil, err
 		}
-		results = append(results, result)
+		results[url] = content
 	}
 
 	return results, nil
 }
 
-func downloadOne(url string) (*Result, error) {
+func downloadOne(url string) (string, error) {
 	resp, err := http.Get(url)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		return nil, fmt.Errorf("Invalid response code %s", resp.Status)
+		return "", fmt.Errorf("Invalid response code %s", resp.Status)
 	}
 
 	content, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	return &Result{
-		Url:     url,
-		Content: string(content),
-	}, nil
+	return string(content), nil
 }
