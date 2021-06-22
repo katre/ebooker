@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package ebooker.data;
 
-option go_package = "ebooker/data";
+option go_package = "ebooker/proto";
 
 message Book {
   string title = 1;

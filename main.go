@@ -7,8 +7,8 @@ import (
 
 	"google.golang.org/protobuf/encoding/prototext"
 
-	"ebooker/data"
 	"ebooker/downloader"
+	"ebooker/proto"
 	"ebooker/selector"
 )
 
@@ -37,7 +37,7 @@ func createBook(inputfile string) error {
 		return err
 	}
 
-	var input data.Book
+	var input proto.Book
 	if err := prototext.Unmarshal(contents, &input); err != nil {
 		return err
 	}
@@ -70,7 +70,7 @@ func createBook(inputfile string) error {
 	return nil
 }
 
-func getAllUrls(chapters []*data.Chapter) []string {
+func getAllUrls(chapters []*proto.Chapter) []string {
 	var urls []string
 	for _, chapter := range chapters {
 		urls = append(urls, chapter.GetUrl())

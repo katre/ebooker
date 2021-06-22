@@ -16,7 +16,7 @@ proto_library(
 
 go_proto_library(
     name = "input_proto_go",
-    importpath = "ebooker/data",
+    importpath = "ebooker/proto",
     protos = [":input_proto"],
 )
 
