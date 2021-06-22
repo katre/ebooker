@@ -26,7 +26,7 @@ func TestSelectContent(t *testing.T) {
 		{
 			name: "missing",
 			content: `
-      <html><body>boilerplate<div">This is the actual stuff</div></html>
+      <html><body>boilerplate<div>This is the actual stuff</div></html>
       `,
 			selector: "div.post-content",
 			want:     "",
@@ -34,7 +34,7 @@ func TestSelectContent(t *testing.T) {
 		{
 			name: "with-markup",
 			content: `
-      <html><body>boilerplate<div">This is the <i>actual</i> stuff</div></html>
+      <html><body>boilerplate<div class="post-content">This is the <i>actual</i> stuff</div></html>
       `,
 			selector: "div.post-content",
 			want:     "This is the <i>actual</i> stuff",
@@ -42,7 +42,7 @@ func TestSelectContent(t *testing.T) {
 		{
 			name: "with-link",
 			content: `
-      <html><body>boilerplate<div">This is the <a href="example.com">actual</a> stuff</div></html>
+      <html><body>boilerplate<div class="post-content">This is the <a href="example.com">actual</a> stuff</div></html>
       `,
 			selector: "div.post-content",
 			want:     "This is the actual stuff",
