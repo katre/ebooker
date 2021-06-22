@@ -42,6 +42,13 @@ http_archive(
 
 load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
 
+go_repository(
+    name = "com_github_jarcoal_httpmock",
+    importpath = "github.com/jarcoal/httpmock",
+    sum = "h1:8kI16SoO6LQKgPE7PvQuV+YuD/inwHd7fOOe2zMbo4k=",
+    version = "v1.0.8",
+)
+
 rules_proto_dependencies()
 
 rules_proto_toolchains()

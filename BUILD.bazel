@@ -25,7 +25,6 @@ go_library(
     srcs = ["downloader.go"],
     importpath = "ebooker/downloader",
     deps = [
-        ":input_proto_go",
     ],
 )
 
@@ -34,6 +33,7 @@ go_test(
     srcs = ["downloader_test.go"],
     embed = [":downloader"],
     deps = [
+        "@com_github_jarcoal_httpmock//:go_default_library",
     ],
 )
 
