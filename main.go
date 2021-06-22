@@ -4,16 +4,20 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"regexp"
 
 	"google.golang.org/protobuf/encoding/prototext"
 
 	"ebooker/data"
 	"ebooker/downloader"
+	"ebooker/maker"
 	"ebooker/proto"
 	"ebooker/selector"
 )
 
 // Define flags
+
+var textprotoRe = regexp.MustCompile(`\.textproto$`)
 
 func main() {
 	flag.Parse()
@@ -22,14 +26,15 @@ func main() {
 
 	// Handle inputs
 	for _, input := range flag.Args() {
-		if err := createBook(input); err != nil {
+		output := textprotoRe.ReplaceAllString(input, ".epub")
+		if err := createBook(input, output); err != nil {
 			fmt.Printf("Error building book: %v\n", err)
 			return
 		}
 	}
 }
 
-func createBook(inputfile string) error {
+func createBook(inputfile, filename string) error {
 	fmt.Printf("Reading book data from %s\n", inputfile)
 
 	// Read the file.
@@ -56,13 +61,8 @@ func createBook(inputfile string) error {
 	// Get just the correct output.
 	err = selector.Select(book.Chapters)
 
-	for _, chapter := range book.Chapters {
-		fmt.Printf("Read chapter %s, content: %s\n", chapter.Name, shorten(chapter.Content(), 200))
-	}
-
 	// Generate output
-
-	return nil
+	return maker.Make(book, filename)
 }
 
 func getAllUrls(chapters []*proto.Chapter) []string {

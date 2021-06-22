@@ -70,6 +70,20 @@ go_repository(
     version = "v1.2.0",
 )
 
+go_repository(
+    name = "com_github_bmaupin_go_epub",
+    importpath = "github.com/bmaupin/go-epub",
+    sum = "h1:kImwkzLSjjv6jrCdtNw2u8vOgXhYJ2IaAV766owtRDM=",
+    version = "v0.6.1",
+)
+
+go_repository(
+    name = "com_github_gofrs_uuid",
+    importpath = "github.com/gofrs/uuid",
+    sum = "h1:1SD/1F5pU8p29ybwgQSwpQk+mwdRrXCYuPhW6m+TnJw=",
+    version = "v4.0.0+incompatible",
+)
+
 rules_proto_dependencies()
 
 rules_proto_toolchains()

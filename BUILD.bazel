@@ -64,6 +64,16 @@ go_test(
     embed = [":selector"],
 )
 
+go_library(
+    name = "maker",
+    srcs = ["maker.go"],
+    importpath = "ebooker/maker",
+    deps = [
+        ":data",
+        "@com_github_bmaupin_go_epub//:go_default_library",
+    ],
+)
+
 go_binary(
     name = "ebooker",
     srcs = ["main.go"],
@@ -71,6 +81,7 @@ go_binary(
         ":data",
         ":downloader",
         ":input_proto_go",
+        ":maker",
         ":selector",
         "@org_golang_google_protobuf//encoding/prototext:go_default_library",
     ],
