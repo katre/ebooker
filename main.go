@@ -64,18 +64,3 @@ func createBook(inputfile, filename string) error {
 	// Generate output
 	return maker.Make(book, filename)
 }
-
-func getAllUrls(chapters []*proto.Chapter) []string {
-	var urls []string
-	for _, chapter := range chapters {
-		urls = append(urls, chapter.GetUrl())
-	}
-	return urls
-}
-
-func shorten(input string, length int) string {
-	if len(input) < length {
-		return input
-	}
-	return input[0:length] + "..."
-}
