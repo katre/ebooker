@@ -6,24 +6,24 @@ import (
 
 type Chapter struct {
 	Name     string
-	content  string
-	url      string
+	content  []string
+	urls     []string
 	selector string
 }
 
-func (c *Chapter) Url() string {
-	return c.url
+func (c *Chapter) Urls() []string {
+	return c.urls
 }
 
 func (c *Chapter) Selector() string {
 	return c.selector
 }
 
-func (c *Chapter) Content() string {
+func (c *Chapter) Content() []string {
 	return c.content
 }
 
-func (c *Chapter) SetContent(newContent string) {
+func (c *Chapter) SetContent(newContent []string) {
 	c.content = newContent
 }
 
@@ -51,7 +51,7 @@ func newChapters(chapters []*proto.Chapter, defaultSelector string) []*Chapter {
 		}
 		result := &Chapter{
 			Name:     chapter.GetName(),
-			url:      chapter.GetUrl(),
+			urls:     chapter.GetUrl(),
 			selector: selector,
 		}
 

@@ -10,9 +10,13 @@ import (
 
 func Download(downloadables []*data.Chapter) error {
 	for _, d := range downloadables {
-		content, err := downloadOne(d.Url())
-		if err != nil {
-			return err
+		var content []string
+		for _, url := range d.Urls() {
+			c, err := downloadOne(url)
+			if err != nil {
+				return err
+			}
+			content = append(content, c)
 		}
 		d.SetContent(content)
 	}

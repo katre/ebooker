@@ -13,6 +13,6 @@ message Book {
 
 message Chapter {
   string name = 1;
-  string url = 2;
+  repeated string url = 2;
   string selector = 3;
 }

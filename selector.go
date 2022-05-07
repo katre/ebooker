@@ -10,9 +10,13 @@ import (
 
 func Select(selectables []*data.Chapter) error {
 	for _, s := range selectables {
-		content, err := selectContent(s.Content(), s.Selector())
-		if err != nil {
-			return err
+		var content []string
+		for _, c := range s.Content() {
+			selected, err := selectContent(c, s.Selector())
+			if err != nil {
+				return err
+			}
+			content = append(content, selected)
 		}
 		s.SetContent(content)
 	}
