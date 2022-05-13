@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"flag"
 	"fmt"
 	"io"
@@ -19,8 +18,7 @@ import (
 // Define flags
 
 var input = flag.String("input", "-", "The input textproto to process.")
-var output = flag.String("output", "-", "The file to write the result file to.")
-var outDir = flag.String("out_dir", ".", "The directory to store output in.")
+var dir = flag.String("dir", ".", "The directory to store output in.")
 
 func main() {
 	flag.Parse()
@@ -43,10 +41,15 @@ func main() {
 	}
 
 	// Write out the data so far.
+	err = os.MkdirAll(*dir, 0755)
+	if err != nil {
+		fmt.Printf("Unable to create output directory %s: %v\n", *dir, err)
+
+	}
 	for i, chap := range book.Chapters {
 		for j, cont := range chap.Content() {
 			fileName := fmt.Sprintf("c%02d_s%02d.html", i, j)
-			outfile := path.Join(*outDir, fileName)
+			outfile := path.Join(*dir, fileName)
 
 			err = ioutil.WriteFile(outfile, []byte(cont), 0644)
 			if err != nil {
@@ -57,9 +60,10 @@ func main() {
 	}
 
 	// Write out the updated book data file.
-	err = writeDataFile(book, *output)
+	outfile := path.Join(*dir, "book.textproto")
+	err = writeDataFile(book, outfile)
 	if err != nil {
-		fmt.Printf("Unable to write book data to %q: %v\n", *output, err)
+		fmt.Printf("Unable to write book data to %q: %v\n", outfile, err)
 		return
 	}
 }
@@ -92,33 +96,19 @@ func readDataFile(name string) (*data.Book, error) {
 	return book, nil
 }
 
-func openOutputFile(name string) (io.Writer, error) {
-	if name == "-" {
-		return os.Stdout, nil
-	}
-
-	return os.Open(name)
-}
-
 func writeDataFile(book *data.Book, name string) error {
-	w, err := openOutputFile(name)
-	if err != nil {
-		return err
-	}
-
 	result, err := prototext.Marshal(book.AsProto())
 	if err != nil {
 		return err
 	}
 
-	bw := bufio.NewWriter(w)
-	n, err := bw.Write(result)
-	if err != nil {
-		return err
+	if name == "-" {
+		fmt.Printf("%s\n", string(result))
+	} else {
+		err := ioutil.WriteFile(name, result, 0644)
+		if err != nil {
+			return err
+		}
 	}
-	if n != len(result) {
-		return fmt.Errorf("Didn't write entire output!")
-	}
-	bw.Flush()
 	return nil
 }
