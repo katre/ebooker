@@ -4,29 +4,6 @@ import (
 	"ebooker/proto"
 )
 
-type Chapter struct {
-	Name     string
-	content  []string
-	urls     []string
-	selector string
-}
-
-func (c *Chapter) Urls() []string {
-	return c.urls
-}
-
-func (c *Chapter) Selector() string {
-	return c.selector
-}
-
-func (c *Chapter) Content() []string {
-	return c.content
-}
-
-func (c *Chapter) SetContent(newContent []string) {
-	c.content = newContent
-}
-
 type Book struct {
 	Title    string
 	Author   string
@@ -59,4 +36,38 @@ func newChapters(chapters []*proto.Chapter, defaultSelector string) []*Chapter {
 	}
 
 	return results
+}
+
+func (b Book) AsProto() *proto.Book {
+	p := &proto.Book{
+		Title:  b.Title,
+		Author: b.Author,
+		// defaultSelector
+		// Chapters
+	}
+
+	return p
+}
+
+type Chapter struct {
+	Name     string
+	content  []string
+	urls     []string
+	selector string
+}
+
+func (c *Chapter) Urls() []string {
+	return c.urls
+}
+
+func (c *Chapter) Selector() string {
+	return c.selector
+}
+
+func (c *Chapter) Content() []string {
+	return c.content
+}
+
+func (c *Chapter) SetContent(newContent []string) {
+	c.content = newContent
 }
