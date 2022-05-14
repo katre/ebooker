@@ -57,7 +57,10 @@ func (b Book) Write(dir string) error {
 }
 
 func (b Book) writeDataFile(name string) error {
-	result, err := prototext.Marshal(b.AsProto())
+	opts := prototext.MarshalOptions{
+		Multiline: true,
+	}
+	result, err := opts.Marshal(b.AsProto())
 	if err != nil {
 		return err
 	}
