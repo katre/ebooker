@@ -11,6 +11,7 @@ import (
 
 	"ebooker/data"
 	"ebooker/proto"
+	"ebooker/selector"
 )
 
 func DownloadBook(filename string) (*data.Book, error) {
@@ -23,6 +24,10 @@ func DownloadBook(filename string) (*data.Book, error) {
 	fmt.Printf("Downloading %s, by %s\n", book.Title, book.Author)
 
 	err = Download(book.Chapters)
+	if err != nil {
+		return nil, fmt.Errorf("Unable to download book: %v", err)
+	}
+	err = selector.Select(book.Chapters)
 	if err != nil {
 		return nil, fmt.Errorf("Unable to download book: %v", err)
 	}

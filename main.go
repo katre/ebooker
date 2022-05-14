@@ -8,7 +8,6 @@ import (
 	"ebooker/downloader"
 	//"ebooker/maker"
 	//"ebooker/proto"
-	//"ebooker/selector"
 )
 
 // Define flags
@@ -31,16 +30,22 @@ func main() {
 	}
 
 	fmt.Printf("Processing book %s (by %s)\n", book.Title, book.Author)
+
+	if *generate {
+	} else {
+		err = book.Write(*dir)
+		if err != nil {
+			fmt.Printf("Error writng book data to %s: %v\n", *dir, err)
+			return
+		}
+		fmt.Printf("Wrote data for %s to %s\n", book.Title, *dir)
+	}
+
 }
 
 func getBook() (*data.Book, error) {
 	if *download {
 		book, err := downloader.DownloadBook(*input)
-		if err != nil {
-			return nil, err
-		}
-
-		err = book.Write(*dir)
 		if err != nil {
 			return nil, err
 		}
