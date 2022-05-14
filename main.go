@@ -49,7 +49,6 @@ func main() {
 		}
 		fmt.Printf("Wrote data for %s to %s\n", book.Title, *dir)
 	}
-
 }
 
 func getBook() (*data.Book, error) {
@@ -63,6 +62,5 @@ func getBook() (*data.Book, error) {
 	}
 
 	// Assume the book data is in dir.
-	// blarg
-	return nil, fmt.Errorf("Unimplemented")
+	return data.ReadBook(*dir)
 }

@@ -3,19 +3,14 @@ package downloader
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
-	"os"
-
-	"google.golang.org/protobuf/encoding/prototext"
 
 	"ebooker/data"
-	"ebooker/proto"
 	"ebooker/selector"
 )
 
 func DownloadBook(filename string) (*data.Book, error) {
-	book, err := readDataFile(filename)
+	book, err := data.ReadDataFile(filename)
 	if err != nil {
 		return nil, fmt.Errorf("Unable to read book data from %q: %v", filename, err)
 	}
@@ -32,34 +27,6 @@ func DownloadBook(filename string) (*data.Book, error) {
 		return nil, fmt.Errorf("Unable to download book: %v", err)
 	}
 
-	return book, nil
-}
-
-func openDataFile(name string) (io.Reader, error) {
-	if name == "-" {
-		return os.Stdin, nil
-	}
-
-	return os.Open(name)
-}
-
-func readDataFile(name string) (*data.Book, error) {
-	r, err := openDataFile(name)
-	if err != nil {
-		return nil, err
-	}
-
-	content, err := ioutil.ReadAll(r)
-	if err != nil {
-		return nil, err
-	}
-
-	var input proto.Book
-	if err := prototext.Unmarshal(content, &input); err != nil {
-		return nil, err
-	}
-
-	book := data.NewBook(input)
 	return book, nil
 }
 

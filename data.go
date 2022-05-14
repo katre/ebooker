@@ -2,6 +2,7 @@ package data
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"path"
@@ -25,6 +26,61 @@ func NewBook(input proto.Book) *Book {
 		Chapters:        newChapters(input.GetChapters(), input.GetDefaultSelector()),
 		defaultSelector: input.GetDefaultSelector(),
 	}
+}
+
+func ReadBook(dir string) (*Book, error) {
+	// Read the textproto file.
+	infile := path.Join(dir, "book.textproto")
+	book, err := ReadDataFile(infile)
+	if err != nil {
+		return nil, err
+	}
+
+	// Read the contents from the data dir.
+	for i, chap := range book.Chapters {
+		var contents []string
+		for j := 0; j < len(chap.urls); j++ {
+			fileName := fmt.Sprintf("c%02d_s%02d.html", i, j)
+			infile := path.Join(dir, fileName)
+
+			content, err := ioutil.ReadFile(infile)
+			if err != nil {
+				return nil, fmt.Errorf("Unable to read chapter %d, section %d file file %s: %v", i, j, infile, err)
+			}
+			contents = append(contents, string(content))
+		}
+		chap.SetContent(contents)
+	}
+
+	return book, nil
+}
+
+func openDataFile(name string) (io.Reader, error) {
+	if name == "-" {
+		return os.Stdin, nil
+	}
+
+	return os.Open(name)
+}
+
+func ReadDataFile(name string) (*Book, error) {
+	r, err := openDataFile(name)
+	if err != nil {
+		return nil, err
+	}
+
+	content, err := ioutil.ReadAll(r)
+	if err != nil {
+		return nil, err
+	}
+
+	var input proto.Book
+	if err := prototext.Unmarshal(content, &input); err != nil {
+		return nil, err
+	}
+
+	book := NewBook(input)
+	return book, nil
 }
 
 func (b Book) Write(dir string) error {
