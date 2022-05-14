@@ -31,6 +31,26 @@ go_library(
 )
 
 go_library(
+    name = "downloader",
+    srcs = ["downloader.go"],
+    importpath = "ebooker/downloader",
+    deps = [
+        "//:book_proto_go",
+        "//:data",
+        "@org_golang_google_protobuf//encoding/prototext:go_default_library",
+    ],
+)
+
+go_test(
+    name = "downloader_test",
+    srcs = ["downloader_test.go"],
+    embed = [":downloader"],
+    deps = [
+        "@com_github_jarcoal_httpmock//:go_default_library",
+    ],
+)
+
+go_library(
     name = "selector",
     srcs = ["selector.go"],
     importpath = "ebooker/selector",
@@ -63,9 +83,9 @@ go_binary(
     deps = [
         ":book_proto_go",
         ":data",
+        ":downloader",
         ":maker",
         ":selector",
-        "//download:downloader_lib",
         "@org_golang_google_protobuf//encoding/prototext:go_default_library",
     ],
 )
