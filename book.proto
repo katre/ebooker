@@ -15,5 +15,4 @@ message Chapter {
   string name = 1;
   repeated string url = 2;
   string selector = 3;
-  string file = 4;
 }

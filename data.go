@@ -5,17 +5,35 @@ import (
 )
 
 type Book struct {
-	Title    string
-	Author   string
-	Chapters []*Chapter
+	Title           string
+	Author          string
+	Chapters        []*Chapter
+	defaultSelector string
 }
 
 func NewBook(input proto.Book) *Book {
 	return &Book{
-		Title:    input.GetTitle(),
-		Author:   input.GetAuthor(),
-		Chapters: newChapters(input.GetChapters(), input.GetDefaultSelector()),
+		Title:           input.GetTitle(),
+		Author:          input.GetAuthor(),
+		Chapters:        newChapters(input.GetChapters(), input.GetDefaultSelector()),
+		defaultSelector: input.GetDefaultSelector(),
 	}
+}
+
+func (b Book) AsProto() *proto.Book {
+	return &proto.Book{
+		Title:           b.Title,
+		Author:          b.Author,
+		DefaultSelector: b.defaultSelector,
+		Chapters:        chaptersAsProtos(b.Chapters),
+	}
+}
+
+type Chapter struct {
+	Name     string
+	content  []string
+	urls     []string
+	selector string
 }
 
 func newChapters(chapters []*proto.Chapter, defaultSelector string) []*Chapter {
@@ -38,22 +56,14 @@ func newChapters(chapters []*proto.Chapter, defaultSelector string) []*Chapter {
 	return results
 }
 
-func (b Book) AsProto() *proto.Book {
-	p := &proto.Book{
-		Title:  b.Title,
-		Author: b.Author,
-		// defaultSelector
-		// Chapters
+func chaptersAsProtos(chapters []*Chapter) []*proto.Chapter {
+	var results []*proto.Chapter
+
+	for _, chapter := range chapters {
+		results = append(results, chapter.AsProto())
 	}
 
-	return p
-}
-
-type Chapter struct {
-	Name     string
-	content  []string
-	urls     []string
-	selector string
+	return results
 }
 
 func (c *Chapter) Urls() []string {
@@ -70,4 +80,12 @@ func (c *Chapter) Content() []string {
 
 func (c *Chapter) SetContent(newContent []string) {
 	c.content = newContent
+}
+
+func (c *Chapter) AsProto() *proto.Chapter {
+	return &proto.Chapter{
+		Name:     c.Name,
+		Selector: c.selector,
+		Url:      c.urls,
+	}
 }
