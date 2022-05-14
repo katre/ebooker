@@ -9,7 +9,9 @@ go_library(
     srcs = ["downloader.go"],
     importpath = "ebooker/downloader",
     deps = [
+        "//:book_proto_go",
         "//:data",
+        "@org_golang_google_protobuf//encoding/prototext:go_default_library",
     ],
 )
 
@@ -27,8 +29,5 @@ go_binary(
     srcs = ["main.go"],
     deps = [
         ":downloader_lib",
-        "//:book_proto_go",
-        "//:data",
-        "@org_golang_google_protobuf//encoding/prototext:go_default_library",
     ],
 )

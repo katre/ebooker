@@ -1,6 +1,13 @@
 package data
 
 import (
+	"fmt"
+	"io/ioutil"
+	"os"
+	"path"
+
+	"google.golang.org/protobuf/encoding/prototext"
+
 	"ebooker/proto"
 )
 
@@ -18,6 +25,52 @@ func NewBook(input proto.Book) *Book {
 		Chapters:        newChapters(input.GetChapters(), input.GetDefaultSelector()),
 		defaultSelector: input.GetDefaultSelector(),
 	}
+}
+
+func (b Book) Write(dir string) error {
+	// Write out the data so far.
+	err := os.MkdirAll(dir, 0755)
+	if err != nil {
+		return fmt.Errorf("Unable to create output directory %s: %v", dir, err)
+	}
+
+	for i, chap := range b.Chapters {
+		for j, cont := range chap.Content() {
+			fileName := fmt.Sprintf("c%02d_s%02d.html", i, j)
+			outfile := path.Join(dir, fileName)
+
+			err = ioutil.WriteFile(outfile, []byte(cont), 0644)
+			if err != nil {
+				return fmt.Errorf("Unable to write chapter %d, section %d to file %s: %v", i, j, outfile, err)
+			}
+		}
+	}
+
+	// Write out the updated book data file.
+	outfile := path.Join(dir, "book.textproto")
+	err = b.writeDataFile(outfile)
+	if err != nil {
+		return fmt.Errorf("Unable to write book data to %q: %v", outfile, err)
+	}
+
+	return nil
+}
+
+func (b Book) writeDataFile(name string) error {
+	result, err := prototext.Marshal(b.AsProto())
+	if err != nil {
+		return err
+	}
+
+	if name == "-" {
+		fmt.Printf("%s\n", string(result))
+	} else {
+		err := ioutil.WriteFile(name, result, 0644)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (b Book) AsProto() *proto.Book {

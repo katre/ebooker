@@ -26,6 +26,7 @@ go_library(
     importpath = "ebooker/data",
     deps = [
         ":book_proto_go",
+        "@org_golang_google_protobuf//encoding/prototext:go_default_library",
     ],
 )
 
