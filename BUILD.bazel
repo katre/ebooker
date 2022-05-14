@@ -10,14 +10,14 @@ package(
 gazelle(name = "gazelle")
 
 proto_library(
-    name = "input_proto",
-    srcs = ["input.proto"],
+    name = "book_proto",
+    srcs = ["book.proto"],
 )
 
 go_proto_library(
-    name = "input_proto_go",
+    name = "book_proto_go",
     importpath = "ebooker/proto",
-    protos = [":input_proto"],
+    protos = [":book_proto"],
 )
 
 go_library(
@@ -25,6 +25,7 @@ go_library(
     srcs = ["data.go"],
     importpath = "ebooker/data",
     deps = [
+        ":book_proto_go",
     ],
 )
 
@@ -59,6 +60,7 @@ go_binary(
     name = "ebooker",
     srcs = ["main.go"],
     deps = [
+        ":book_proto_go",
         ":data",
         ":maker",
         ":selector",
