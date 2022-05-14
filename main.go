@@ -3,11 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
+	"regexp"
 
 	"ebooker/data"
 	"ebooker/downloader"
-	//"ebooker/maker"
-	//"ebooker/proto"
+	"ebooker/maker"
 )
 
 // Define flags
@@ -17,6 +17,8 @@ var dir = flag.String("dir", ".", "The directory to store output in.")
 
 var download = flag.Bool("download", false, "Whether to download the content or assume it already exists.")
 var generate = flag.Bool("generate", false, "Whether to generate the ebook.")
+
+var textprotoRe = regexp.MustCompile(`\.textproto$`)
 
 func main() {
 	flag.Parse()
@@ -32,6 +34,13 @@ func main() {
 	fmt.Printf("Processing book %s (by %s)\n", book.Title, book.Author)
 
 	if *generate {
+		// Generate output
+		output := textprotoRe.ReplaceAllString(*input, ".epub")
+		err := maker.Make(book, output)
+		if err != nil {
+			fmt.Printf("Error generating book data: %v\n", err)
+			return
+		}
 	} else {
 		err = book.Write(*dir)
 		if err != nil {
@@ -57,53 +66,3 @@ func getBook() (*data.Book, error) {
 	// blarg
 	return nil, fmt.Errorf("Unimplemented")
 }
-
-/*
-var textprotoRe = regexp.MustCompile(`\.textproto$`)
-
-func main() {
-	flag.Parse()
-
-	fmt.Println("ebooker starting...")
-
-	// Handle inputs
-	for _, input := range flag.Args() {
-		output := textprotoRe.ReplaceAllString(input, ".epub")
-		if err := createBook(input, output); err != nil {
-			fmt.Printf("Error building book: %v\n", err)
-			return
-		}
-	}
-}
-
-func createBook(inputfile, filename string) error {
-	fmt.Printf("Reading book data from %s\n", inputfile)
-
-	// Read the file.
-	contents, err := ioutil.ReadFile(inputfile)
-	if err != nil {
-		return err
-	}
-
-	var input proto.Book
-	if err := prototext.Unmarshal(contents, &input); err != nil {
-		return err
-	}
-
-	book := data.NewBook(input)
-
-	fmt.Printf("Processing %s, by %s\n", input.GetTitle(), input.GetAuthor())
-
-	// Download chapters.
-	err = downloader.Download(book.Chapters)
-	if err != nil {
-		return err
-	}
-
-	// Get just the correct output.
-	err = selector.Select(book.Chapters)
-
-	// Generate output
-	return maker.Make(book, filename)
-}
-*/
